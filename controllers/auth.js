@@ -9,21 +9,14 @@ module.exports.login = (req, res) => {
   console.log('login')
 }
 
-module.exports.register = (req, res) => {
+module.exports.register = async (req, res) => {
   const email = req.body.email
   const password = req.body.password
-  const user = new User({ email, password })
-  user
-    .save()
-    .then(() => {
-      console.log('User has been created')
-    })
-    .catch((err) => {
-      if (err.code === 11000) {
-        console.log('email allready in use')
-      }
-      console.log(err.index)
-    })
 
-  res.status(200).json({ message: 'ok' })
+  // check email in db
+  if (await User.findOne({ email })) {
+    res.status(409).json({ message: 'This email allready in use!' })
+  } else {
+    res.status(200).json({ message: 'ok' })
+  }
 }
