@@ -1,5 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const { MONGO_URI } = require('./config/DB')
+
+mongoose
+  .connect(MONGO_URI, { useUnifiedTopology: true, useNewUrlParser: true })
+  .then(() => console.log('> Mongo DB connected'))
+  .catch((err) => console.log(err))
 
 const app = express()
 
