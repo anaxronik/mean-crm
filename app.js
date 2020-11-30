@@ -5,6 +5,8 @@ const app = express()
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+app.use(require('morgan')('dev'))
+app.use(require('cors')())
 
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/order', require('./routes/order'))
