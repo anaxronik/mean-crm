@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { SECRET_KEY } = require('../config/SECRET_KEY')
 const User = require('../models/User')
+const errorHandler = require('../utils/errorHandler')
 
 module.exports.login = async (req, res) => {
   const email = req.body.email
@@ -43,8 +44,7 @@ module.exports.register = async (req, res) => {
       await user.save()
       res.status(201).json({ message: 'Account created!' })
     } catch (error) {
-      console.error(error)
-      res.status(500).json({ message: 'Error on server in create user' })
+      errorHandler(res, error)
     }
   }
 }
