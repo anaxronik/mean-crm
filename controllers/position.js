@@ -1,19 +1,50 @@
-module.exports.getAllByCategory = (req, res) => {
-  res.status(200).json({ message: 'ok' })
-  console.log('getAllByCategory position')
+const Position = require('../models/Position')
+const errorHandler = require('../utils/errorHandler')
+
+module.exports.getAllByCategory = async (req, res) => {
+  try {
+    const position = await Position.find({
+      category: req.params.categoryId,
+      user: req.user.id,
+    })
+  } catch (error) {
+    errorHandler(res, error)
+  }
 }
 
-module.exports.create = (req, res) => {
-  res.status(200).json({ message: 'ok' })
-  console.log('create position')
+module.exports.create = async (req, res) => {
+  try {
+    const position = await new Position({
+      name: req.body.name,
+      cost: req.body.cost,
+      category: req.body.category,
+      user: req.user.id,
+    }).save()
+    res.status(201).json({ message: 'position created' })
+  } catch (error) {
+    errorHandler(res, error)
+  }
 }
 
-module.exports.updateById = (req, res) => {
-  res.status(200).json({ message: 'ok' })
-  console.log('updateById position')
+module.exports.updateById = async (req, res) => {
+  try {
+    console.log(req.params.id)
+    const position = await Position.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true }
+    )
+    res.status(200).json({ message: 'position updated', position })
+  } catch (error) {
+    errorHandler(res, error)
+  }
 }
 
-module.exports.deleteById = (req, res) => {
-  res.status(200).json({ message: 'ok' })
-  console.log('deleteById position')
+module.exports.deleteById = async (req, res) => {
+  try {
+    await Position.remove({ _id: req.params.id })
+    res.status(200).json({ message: 'position deleted' })
+  } catch (error) {
+    errorHandler(res, error)
+  }
 }
