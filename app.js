@@ -1,23 +1,37 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-const { MONGO_URI } = require('./config/DB')
+const passport = require('passport')
 
+const { MONGO_URI } = require('./config/DB')
+const { passportMW } = require('./midleware/passport')
+
+const app = express()
+
+// DB
 mongoose
   .connect(MONGO_URI, { useUnifiedTopology: true, useNewUrlParser: true })
   .then(() => console.log('> Mongo DB connected'))
   .catch((err) => console.log(err))
 
-const app = express()
+// route protection
+app.use(passport.initialize())
+passportMW(passport)
 
+// utils
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(require('morgan')('dev'))
 app.use(require('cors')())
 
+// routes
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/order', require('./routes/order'))
-app.use('/api/category', require('./routes/category'))
+app.use(
+  '/api/category',
+  passport.authenticate('jwt', { session: false }),
+  require('./routes/category')
+)
 app.use('/api/position', require('./routes/position'))
 app.use('/api/analytics', require('./routes/analytics'))
 

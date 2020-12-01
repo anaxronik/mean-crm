@@ -9,7 +9,7 @@ module.exports.login = async (req, res) => {
   const user = await User.findOne({ email })
   if (user) {
     if (bcrypt.compareSync(password, user.password)) {
-      const token = jwt.sign({ email, id: user._id }, SECRET_KEY, {
+      const token = jwt.sign({ email, userId: user._id }, SECRET_KEY, {
         expiresIn: 60 * 60,
       })
       const tokenBearer = 'Bearer ' + token
