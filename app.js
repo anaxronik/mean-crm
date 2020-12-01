@@ -26,13 +26,25 @@ app.use(require('cors')())
 
 // routes
 app.use('/api/auth', require('./routes/auth'))
-app.use('/api/order', require('./routes/order'))
+app.use(
+  '/api/order',
+  passport.authenticate('jwt', { session: false }),
+  require('./routes/order')
+)
 app.use(
   '/api/category',
   passport.authenticate('jwt', { session: false }),
   require('./routes/category')
 )
-app.use('/api/position', require('./routes/position'))
-app.use('/api/analytics', require('./routes/analytics'))
+app.use(
+  '/api/position',
+  passport.authenticate('jwt', { session: false }),
+  require('./routes/position')
+)
+app.use(
+  '/api/analytics',
+  passport.authenticate('jwt', { session: false }),
+  require('./routes/analytics')
+)
 
 module.exports = app
