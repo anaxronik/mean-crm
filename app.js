@@ -24,6 +24,9 @@ app.use(bodyParser.json())
 app.use(require('morgan')('dev'))
 app.use(require('cors')())
 
+// server static files
+app.use('/uploads', express.static('uploads'))
+
 // routes
 app.use('/api/auth', require('./routes/auth'))
 app.use(

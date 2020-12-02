@@ -30,10 +30,10 @@ module.exports.deleteById = async (req, res) => {
 
 module.exports.create = async (req, res) => {
   try {
-    const category = await new Category({
+    await new Category({
       name: req.body.name,
-      imgSrc: req.body.imgSrc,
       user: req.user.id,
+      imgSrc: req.file ? req.file.path : '',
     }).save()
     res.status(201).json({ message: 'category created' })
   } catch (error) {
@@ -42,10 +42,14 @@ module.exports.create = async (req, res) => {
 }
 
 module.exports.updateById = async (req, res) => {
+  const updatedItem = {
+    name: req.body.name,
+    imgSrc: req.file ? req.file.path : '',
+  }
   try {
-    const category = await Category.findByIdAndUpdate(
+    const category = await Category.findOneAndUpdate(
       { _id: req.params.id },
-      { $set: req.body },
+      { $set: updatedItem },
       { new: true }
     )
     res.status(200).json(category)

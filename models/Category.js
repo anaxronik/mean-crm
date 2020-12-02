@@ -14,6 +14,10 @@ const categorySchema = new Schema({
     ref: 'users',
     type: Schema.Types.ObjectId,
   },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 })
 
 module.exports = mongoose.model('categories', categorySchema)
